@@ -391,11 +391,11 @@ test:backend:integration:
     when: always
     paths:
       - ${GOCOVERDIR}/integration
-      - backend/logs.*
-      - backend/results_integration_*.xml
-      - backend/report_integration_*.html
+      - backend/tests/integration/tests/logs.*
+      - backend/tests/integration/tests/results_integration_*.xml
+      - backend/tests/integration/report_integration_*.html
     reports:
-      junit: backend/results_integration_*.xml
+      junit: backend/tests/integration/tests/results_integration_*.xml
 
 test:integration:
   stage: test
