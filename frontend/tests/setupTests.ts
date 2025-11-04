@@ -13,12 +13,11 @@
 //    limitations under the License.
 import { createMocks } from 'react-idle-timer';
 
-import { mockDate } from '@northern.tech/testing/mockData';
 import handlers from '@northern.tech/testing/requestHandlers/requestHandlers';
-import { afterAll as ntAfterAll, afterEach as ntAfterEach, beforeAll as ntBeforeAll } from '@northern.tech/testing/setupTests';
+import { afterAll as ntAfterAll, afterEach as ntAfterEach, beforeAll as ntBeforeAll, beforeEach as ntBeforeEach } from '@northern.tech/testing/setupTests';
 import '@testing-library/jest-dom/vitest';
 import { setupServer } from 'msw/node';
-import { afterAll, afterEach, beforeAll, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest';
 
 process.on('unhandledRejection', err => {
   throw err;
@@ -29,25 +28,28 @@ const server = setupServer(...handlers);
 
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
-  value: vi.fn().mockImplementation(query => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: vi.fn(),
-    removeListener: vi.fn(),
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn()
-  }))
+  value: vi.fn().mockImplementation(function (query) {
+    return {
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn()
+    };
+  })
 });
-
-vi.useFakeTimers({ now: mockDate });
-vi.setSystemTime(mockDate);
 
 beforeAll(async () => {
   createMocks();
   await server.listen({ onUnhandledRequest: 'error' });
   await ntBeforeAll();
+});
+
+beforeEach(async () => {
+  await ntBeforeEach();
 });
 
 afterEach(async () => {
